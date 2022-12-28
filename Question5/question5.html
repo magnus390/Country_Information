@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITC5202-Question 5</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var currenciess;
+        $(document).ready(function () {
+            $("#find").click(function () {
+                localStorage.setItem("Country", document.getElementById('name').value);
+                document.getElementById("demo").innerHTML = "";
+
+                $.ajax({
+                    url: "https://restcountries.com/v2/all",
+                    success: function (data) {
+                        console.log(data)
+                        var name = $("#name").val();
+                        var output = "<br><br>";
+                        output += "<table border='2'>";
+                        output += "<tr style=background-color:#481470;color:white;>";
+                        output += "<th colspan = 6>" + name + "</th>";
+                        output += "</tr>";
+                        output += "<tr style=background-color:#d2b2e5>";
+                        output += "<th>" + "Country name" + "</th>";
+                        output += "<th>" + "Population" + "</th>";
+                        output += "<th>" + "Flag" + "</th>";
+                        output += "<th>" + "Native Name" + "</th>";
+                        output += "<th>" + "Timezones" + "</th>";
+                        output += "<th>" + "Exchange Rate" + "</th>";
+                        output += "</tr>";
+                        $.each(data, function (index, value) {
+                            if (name == value.name) {
+
+                                output += "<tr style=color:#8741bb>";
+                                output += "<td>" + value.name + "</td>";
+                                output += "<td>" + value.population + "</td>";
+                                output += "<td>" + "<img src=" + value.flags.png + " alt='Country flag' width='100' height='50'><br></td>";
+                                output += "<td>" + value.nativeName + "</td>";
+                                output += "<td>" + value.timezones + "</td>";
+                                $.each(value.currencies, function (index, value) {
+                                    currenciess = value.code;
+
+
+                                    $.ajax({
+                                        async: false,
+                                        url: "http://data.fixer.io/api/latest?access_key=30a3a33b0e9b4e1ad7dbca0739fbb243",
+                                        success: function (data1) {
+                                            console.log(data1);
+                                            $.each(data1.rates, function (currency, rate) {
+                                                if (currenciess == currency) {
+                                                    console.log(rate);
+                                                    output += "<td>" + rate + "</td>";
+
+                                                }
+
+                                            });
+                                        }
+                                    })
+
+                                })
+                                output += "</table>";
+                                document.getElementById("demo").innerHTML += output;
+                                localStorage.setItem("Output", document.getElementById("demo").innerHTML);
+                                output += "</tr>";
+
+                            }
+                        })
+                    },
+
+                    error: function () { alert('Error!') }
+
+                })
+
+                $.ajax({
+                    async: false,
+                    url: "Country.json",
+                    success: function (data2) {
+                        console.log(data2);
+                        var name = $("#name").val();
+                        var output = "<table border='2'>";
+                        output += "<tr style=background-color:#481470;color:white;>";
+                        output += "<th colspan = 6>" + name + "</th>";
+                        output += "</tr>";
+                        output += "<tr style=background-color:#d2b2e5>";
+                        output += "<th>" + "Country name" + "</th>";
+                        output += "<th>" + "Border Countries" + "</th>";
+                        output += "</tr>";
+                        $.each(data2.mondial.country, function (index1, value1) {
+                            if (name == value1.name) {
+                                console.log(value1);
+                                output += "<tr style=color:#8741bb>";
+                                output += "<td>" + value1.name + "</td>";
+                                output += "<td>"
+                                $.each(value1.border, function (index2, value2) {
+                                    output += "<li>" + value2['-country'] + "</li>";
+
+
+                                });
+                                output += "</td>"
+                            }
+                        });
+                        output += "</table>";
+                        document.getElementById("demo").innerHTML += output;
+                        output += "</tr>";
+
+
+                        var output = "<br><br>";
+                        output += "<table border='2'>";
+                        output += "<tr style=background-color:#481470;color:white;>";
+                        output += "<th colspan = 6>" + name + "</th>";
+                        output += "</tr>";
+                        output += "<tr style=background-color:#d2b2e5>";
+                        output += "<th>" + "No of provinces" + "</th>";
+                        output += "<th>" + "Area" + "</th>";
+                        output += "<th>" + "Province Name" + "</th>";
+                        output += "<th>" + "City Name" + "</th>";
+                        output += "<th>" + "City Local Name" + "</th>";
+                        output += "<th>" + "City Population in 2011" + "</th>";
+
+                        output += "</tr>";
+                        var c = 0;
+                        $.each(data2.mondial.country, function (index1, value1) {
+                            if (name == value1.name) {
+                                console.log(value1);
+                                output += "<tr style=color:#8741bb>";
+                                output += "<td>";
+
+                                $.each(value1.province, function (index2, value2) {
+                                    c++;
+                                });
+                                output += c;
+                                output += "</td>";
+                                output += "<td>" + value1['-area'] + "</td>";
+                                output += "<td>";
+
+                                $.each(value1.province, function (index3, value3) {
+                                    output += "<li>" + value3.name + "</li>"
+                                })
+                                output += "</td>";
+                                output += "<td>";
+
+
+                                $.each(value1.province, function (index3, value3) {
+
+                                    {
+                                        $.each(value3.city, function (index4, value4) {
+                                            console.log(value4.name);
+                                            if (value4.name != undefined) {
+
+                                                output += "<li>" + (value4.name) + "</li>"
+                                            }
+                                        })
+                                    }
+                                })
+
+                                output += "</td>";
+
+
+                                output += "<td>";
+
+                                $.each(value1.province, function (index3, value3) {
+
+                                    {
+                                        if (value3.localname != undefined) {
+                                            output += "<li>" + (value3.localname) + "</li>"
+                                        }
+
+                                    }
+                                })
+
+                                output += "</td>";
+
+
+
+
+
+
+                                output += "<td>";
+
+
+                                $.each(value1.province, function (index3, value3) {
+
+                                    {
+                                        $.each(value3.city, function (index4, value4) {
+                                            if (value4.population != undefined) {
+                                                $.each(value4.population, function (index5, value5) {
+                                                    console.log(value5);
+                                                    if ($(value5).attr("-year") == "2011") {
+                                                        output += "<li>" + $(value5).attr("#text") + "," + "</li>";
+                                                    }
+
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+
+                                output += "</td>";
+
+
+
+
+
+                            }
+                        });
+
+                        output += "</table>";
+                        document.getElementById("demo").innerHTML += output;
+
+                        output += "</tr>";
+                    }
+                })
+
+
+            })
+
+        });
+
+    </script>
+</head>
+
+<body>
+    <form>
+        Country Name: <input type="text" id="name">
+        <input type="button" value="Find Country Information" id="find">
+    </form>
+    <p id="demo"></p>
+</body>
+
+</html>

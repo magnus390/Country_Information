@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ITC5202-Question 3 Part 1</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$("#find").click(function () {
+				document.getElementById("demo").innerHTML = "";
+				$.getJSON("http://data.fixer.io/api/latest?access_key=9c24a39ba4e6b5ec22d62738451b5003", function (data) {
+					console.log(1);
+					console.log(data);
+
+				})
+				$.ajax({
+					url: "country-json.json",
+					success: function (data) {
+						console.log(2);
+						console.log(data)
+						var name = $("#name").val();
+						var output = "<table border='2'>";
+						output += "<tr style=background-color:#481470;color:white;>";
+						output += "<th colspan = 5>" + name + "</th>";
+						output += "</tr>";
+						output += "<tr style=background-color:#d2b2e5>";
+						output += "<th>" + "Capital" + "</th>";
+						output += "<th>" + "Country Alpha Code" + "</th>";
+						output += "<th>" + "Currency Code" + "</th>";
+						output += "<th>" + "Currency Name" + "</th>";
+						output += "<th>" + "Currency Symbol" + "</th>";
+						output += "</tr>";
+						$.each(data, function (index, value) {
+							if (name == value.name.common) {
+								console.log("value");
+								console.log(value);
+								output += "<tr style=color:#8741bb>";
+								output += "<td>" + value.capital + "</td>";
+								output += "<td>" + value.cca3 + "</td>";
+								$.each(value.currencies, function (index, value) {
+									output += "<td>" + index + "</td>";
+									output += "<td>" + value.name + "</td>";
+									output += "<td>" + value.symbol + "</td>";
+
+								})
+								console.log(3);
+								console.log(data)
+								output += "</table>";
+								document.getElementById("demo").innerHTML += output;
+
+								output += "</tr>";
+							}
+						})
+					},
+
+					error: function () { alert('Error!') }
+
+
+				})
+
+			})
+
+		});
+
+	</script>
+</head>
+
+<body>
+	<form>
+		Country Name: <input type="text" id="name">
+		<input type="button" value="Find Country Information" id="find">
+	</form>
+	<p id="demo"></p>
+</body>
+
+</html>

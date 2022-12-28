@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 2</title>
+</head>
+
+<style>
+    body {
+        background-color: lightblue;
+        color: crimson;
+    }
+
+    button {
+        color: green;
+    }
+</style>
+
+<body id="body">
+
+    <form>
+        Enter Country Name : <input type="text" id="country">
+        <input type="button" value="Find Country" id="button" onclick="openJSON()">
+    </form>
+
+    <p id="question2"></p>
+    <script>
+        function openJSON() {
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myFunction(this);
+                }
+            }
+            xmlhttp.open("GET", "Country.json", true);
+            xmlhttp.send();
+        }
+        function myFunction(Data) {
+
+            var myObj = JSON.parse(Data.responseText);
+            console.log(myObj.mondial);
+            //            console.log("country = " + document.getElementById('country').value);
+
+            countries = myObj.mondial.country;
+            console.log("Length = " + countries.length);
+
+            country_value = document.getElementById('country').value;
+
+            var table1 = "<br>"
+            table1 += "<table border = '5' >";
+            table1 += "<tr>";
+            table1 += "<th> Country Name: </th>";
+            table1 += "<th> Border Countries: </th>";
+            table1 += "<th> No of Provinces: </th>";
+            table1 += "<th> Area: </th>";
+            table1 += "</tr>";
+
+            try {
+                //Iterate for every country
+                for (var i = 0; i < countries.length; i++) {
+
+                    //compares the value with the value entered in the text field
+                    if (countries[i].name.toLowerCase() == country_value.toLowerCase()) {
+                        table1 += "<tr>";
+                        table1 += "<td>" + countries[i].name + "</td>";
+
+                        table1 += "<td>";
+
+                        //Implementing error handling
+                        try {
+                            border = countries[i].border;
+                            for (var j = 0; j < border.length; j++) {
+                                table1 += "&nbsp;&nbsp;&nbsp;" + border[j]["-country"] + "&nbsp;&nbsp;&nbsp;";
+                            }
+                        }
+                        catch {
+                            table1 += "No border details";
+                        }
+
+
+                        table1 += "</td>";
+
+                        try {
+                            province = countries[i].province.length;
+                        }
+                        catch {
+                            province = "No Province Found";
+                        }
+
+                        table1 += "<td>" + province + "</td>";
+                        table1 += "<td>" + countries[i]["-area"] + "</td>";
+                        table1 += "</tr>";
+                        break;
+                    }
+                }
+
+                table1 += "</table>";
+                table1 += "<br><br><br>";
+
+
+
+
+
+
+
+                //Second table
+                table1 += "<table border = '5' >";
+                table1 += "<tr>";
+                table1 += "<th> Province Name: </th>";
+                table1 += "<th> City Name: </th>";
+                table1 += "<th> City Local Name: </th>";
+                table1 += "<th> City Population in 2011: </th>";
+                table1 += "</tr>";
+
+                // For Province
+                //We already know the value for province from the first table
+
+                table1 += "<tr>";
+                if (province == "No Province Found") {
+                    table1 += "<td>";
+                    table1 += province;
+                    table1 += "</td>";
+                }
+                //Fetching name of the province
+                else {
+                    province = countries[i].province;
+                    table1 += "<td>";
+                    for (var k = 0; k < province.length; k++) {
+
+                        table1 += "&nbsp;&nbsp;&nbsp;" + province[k].name + "&nbsp;&nbsp;&nbsp;<br>";
+                    }
+                    table1 += "</td>";
+                }
+
+
+                //For City
+                //We already know the value for province from the first table
+
+                if (province == "No Province Found") {
+                    table1 += "<td>";
+                    city = countries[i].city;
+                    console.log("City Length" + city.length);
+                    for (var k = 0; k < city.length; k++) {
+                        table1 += city[k].name + "<br>";
+                    }
+                    table1 += "</td>";
+                }
+                //Fetching city from thr province
+                else {
+                    table1 += "<td>";
+                    for (var k = 0; k < province.length; k++) {
+                        table1 += "<br><br><br>" + " For Province " + province[k].name + " the cities are :-" + "<br>";
+                        city = province[k].city;
+                        //                 console.log("City = " + city[0].name);
+                        for (var a = 0; a < city.length; a++) {
+                            console.log(city[a].name);
+                            table1 += city[a].name + "<br>";
+                        }
+                    }
+                    table1 += "</td>";
+                }
+
+
+
+                //For City Local Name
+                //We already know the value for province from the first table
+
+                check = false;
+                table1 += "<td>";
+                if (province == "No Province Found") {
+                    city = countries[i].city;
+                    try {
+                        console.log("Inside City Local Name")
+                        for (var a = 0; a < city.length; a++) {
+                            if (typeof city[a].localname === 'undefined') {
+                                table1 += "";
+                            }
+                            else {
+                                check = true;
+                                table1 += city[a].localname + "<br>";
+                            }
+                        }
+                    }
+                    catch {
+                        console.log("Inside catch City Local Name")
+                        table1 += "";
+                    }
+                }
+                //First fetch city then fetch localname from it
+                else {
+                    try {
+                        for (var b = 0; a < province.length; b++) {
+                            city = province[b].city;
+                            try {
+                                console.log("Inside City Local Name")
+                                for (var a = 0; a < city.length; a++) {
+                                    if (typeof city[a].localname === 'undefined') {
+                                        table1 += "";
+                                    }
+                                    else {
+                                        check = true;
+                                        table1 += city[a].localname + "<br>";
+                                    }
+                                }
+                            }
+                            catch {
+                                console.log("Inside catch City Local Name")
+                                table1 += "";
+                            }
+                        }
+                    }
+                    catch {
+                        table1 += "" + "<br>";
+                    }
+                }
+
+                if (!check) {
+                    table1 += "No localname exist";
+                }
+                table1 += "</td>";
+
+
+                //For City Population in 2011
+                table1 += "<td>";
+                check = false;
+                try {
+                    population = countries[i].population;
+                    for (var a = 0; a < population.length; a++) {
+                        if (population[a]["-year"] == "2011") {
+                            console.log(a);
+                            check = true;
+                            table1 += population[a]["#text"] + "<br>";
+                        }
+                        else {
+                            check = false;
+                        }
+                    }
+                }
+
+                catch {
+                    console.log("Inside catch block of city population")
+                }
+                //boolean variable to check if the population data exists or not
+                if (!check) {
+                    table1 += "No data found for population 2011" + "<br>";
+                }
+
+                table1 += "</td>";
+                table1 += "</tr>";
+                table1 += "</table1>";
+
+                document.getElementById("question2").innerHTML = table1;
+            }
+            catch {
+                alert("Country does not exist");
+                document.getElementById("body").innerHTML = "";
+            }
+
+        }
+    </script>
+</body>
+
+</html>

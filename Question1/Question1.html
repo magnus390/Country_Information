@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 1</title>
+</head>
+
+<style>
+    body {
+        background-color: lightblue;
+        color: crimson;
+    }
+
+    button {
+        color: green;
+    }
+</style>
+
+<body>
+    <button type="button" onclick="loadDoc()">Parse XML data</button>
+
+    <p id="question1"></p>
+    <script>
+        function loadDoc() {
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myFunction(this);
+                }
+            }
+            xmlhttp.open("GET", "Country.xml", true);
+            xmlhttp.send();
+        }
+        function myFunction(Data) {
+            var myObj = Data.responseXML;
+            console.log(myObj);
+
+            var output = "<table border = '5' >";
+            output += "<tr>";
+            output += "<th> Country Name </th>";
+            output += "<th> Government </th>";
+            output += "<th> Total GDP </th>";
+            output += "<th> Capital </th>";
+            output += "<th> Population in 2011 </th>";
+            output += "</tr>";
+
+            var mondial = myObj.getElementsByTagName('mondial')[0];
+            var countries = mondial.getElementsByTagName('country')
+            var name;
+            var government;
+            var tota_gdp;
+            var capital;
+            var population;
+            var pop;
+
+            //iterate for every countries
+            for (var i = 0; i < countries.length; i++) {
+                //fetch country data and error handling
+                try {
+                    if (countries[i].getElementsByTagName('name')[0].innerHTML) {
+                        name = countries[i].getElementsByTagName('name')[0].innerHTML
+                    }
+                }
+                catch {
+                    name = "No Data Found"
+                }
+
+                //fetch government data and error handling
+                try {
+                    if (countries[i].getElementsByTagName('government')[0].innerHTML) {
+                        government = countries[i].getElementsByTagName('government')[0].innerHTML
+                    }
+                }
+                catch {
+                    government = "No Data Found"
+                }
+
+                //fetch total gdp data and error handling
+                try {
+                    if (countries[i].getElementsByTagName('gdp_total')[0].innerHTML) {
+                        total_gdp = countries[i].getElementsByTagName('gdp_total')[0].innerHTML
+                    }
+                }
+                catch {
+                    total_gdp = "No Data Found"
+                }
+
+                //fetch capital data and error handling
+                try {
+                    if (countries[i].getAttribute('capital')) {
+                        capital = countries[i].getAttribute('capital')
+                    }
+                }
+                catch {
+                    capital = "No Data Found"
+                }
+
+                //fetch population data for the year 2011 and error handling
+                population = countries[i].getElementsByTagName('population');
+                for (var j = 0; j < population.length; j++) {
+                    if (population[j].getAttribute('year') == 2011) {
+                        pop = population[j].innerHTML;
+                        break;
+                    }
+                    else {
+                        pop = "No Data Found";
+                    }
+                }
+
+                output += "<tr>";
+
+                output += "<td>" + name + "</td>";
+                output += "<td>" + government + "</td>";
+                output += "<td>" + total_gdp + "</td>";
+                output += "<td>" + capital + "</td>";
+                output += "<td>" + pop + "</td>";
+
+                output += "</tr>";
+            }
+
+            output += "</table>"
+
+            document.getElementById("question1").innerHTML = output;
+        }
+    </script>
+</body>
+
+</html>

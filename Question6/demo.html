@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Demo </title>
+</head>
+
+<style>
+    body {
+        background-color: lightblue;
+        color: crimson;
+    }
+</style>
+
+<body onload="openJSON()">
+
+    <p id="demo"></p>
+    <input type="text" id="country">
+    <input type="button" value="Find Country" id="button" onclick="openJSON()">
+    <script>
+        function openJSON() {
+            localStorage.setItem("Country", document.getElementById('country').value);
+            console.log("Country from demo file = " + document.getElementById('country').value);
+            var ctry = "France";
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myFunction(this);
+                }
+            }
+            xmlhttp.open("GET", "http://api.weatherstack.com/current?access_key=2120870fbc9447d1f6ac45f0b1618ee6&query=" +
+                document.getElementById('country').value + "", true);
+            xmlhttp.send();
+        }
+        function myFunction(Data) {
+
+            var myObj = JSON.parse(Data.responseText);
+            console.log(myObj);
+
+            var table1 = "<br>"
+            table1 += "<table border = '5' >";
+            table1 += "<tr>";
+            table1 += "<th> Day </th>";
+            table1 += "<th> Observation Time </th>";
+            table1 += "</tr>";
+            table1 += "</table1>"
+            localStorage.setItem("Table", table1);
+            document.getElementById("demo").innerHTML = table1;
+        }
+    </script>
+
+</body>
+
+</html>

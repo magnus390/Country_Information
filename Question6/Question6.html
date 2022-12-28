@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Question 6 </title>
+</head>
+
+<style>
+    body {
+        background-color: lightblue;
+        color: crimson;
+    }
+</style>
+
+<body onload="openJSON()">
+    <p id="question6"></p>
+    <script>
+        function openJSON() {
+            console.log("Country from Question6 file = " + localStorage.getItem("Country"));
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    myFunction(this);
+                }
+            }
+            xmlhttp.open("GET", "http://api.weatherstack.com/current?access_key=e633e7cf0b115fb61986d4140e897862&query=" +
+                localStorage.getItem("Country") + "", true);
+            xmlhttp.send();
+        }
+        function myFunction(Data) {
+
+            var myObj = JSON.parse(Data.responseText);
+            console.log(myObj);
+
+            var table = "<br><br><br>";
+            table += "<table border = '5' >";
+            table += "<tr>";
+            table += "<th> Day </th>";
+            table += "<th> Observation Time </th>";
+            table += "<th> Weather Code </th>";
+            table += "<th> Weather Descriptions </th>";
+            table += "<th> Local time </th>";
+            table += "<th> Timezone </th>";
+            table += "</tr>";
+
+            try {
+                table += "<tr>";
+                table += "<td>" + myObj.current.is_day + "</td>";
+                table += "<td>" + myObj.current.observation_time + "</td>";
+                table += "<td>" + myObj.current.weather_code + "</td>";
+                table += "<td>" + myObj.current.weather_descriptions[0] + "</td>";
+                table += "<td>" + myObj.location.localtime + "</td>";
+                table += "<td>" + myObj.location.timezone_id + "</td>";
+                table += "</tr>";
+                table += "</table>";
+                document.getElementById("question6").innerHTML = localStorage.getItem("Output") + table;
+            }
+            catch {
+                console.log("Country does not exist");
+                document.getElementById("question6").innerHTML = "";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ITC5202-Question 3 Part 2</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+    var currenciess;
+		$(document).ready(function () {
+			$("#find").click(function () {
+				document.getElementById("demo").innerHTML = "";
+			
+				$.ajax({
+					url: "country-json.json",
+					success: function (data) {
+						console.log(data)
+						var name = $("#name").val();
+						var output = "<table border='2'>";
+						output += "<tr style=background-color:#481470;color:white;>";
+						output += "<th colspan = 6>" + name + "</th>";
+						output += "</tr>";
+						output += "<tr style=background-color:#d2b2e5>";
+						output += "<th>" + "Capital" + "</th>";
+						output += "<th>" + "Country Alpha3 Code" + "</th>";
+						output += "<th>" + "Currency Code" + "</th>";
+						output += "<th>" + "Currency Name" + "</th>";
+						output += "<th>" + "Currency Symbol" + "</th>";
+                        output += "<th>" + "Exchange Rate" + "</th>";
+						output += "</tr>";
+						$.each(data, function (index, value) {
+							if (name == value.name.common) {
+								output += "<tr style=color:#8741bb>";
+								output += "<td>" + value.capital + "</td>";
+								output += "<td>" + value.cca3 + "</td>";
+								
+									
+								$.each(value.currencies, function (index, value) {
+                                currenciess=index;
+								output += "<td>" +index+ "</td>";
+								output += "<td>" + value.name + "</td>";
+								output += "<td>" + value.symbol + "</td>";
+
+
+                $.ajax({
+                async:false,
+					      url: "http://data.fixer.io/api/latest?access_key=9c24a39ba4e6b5ec22d62738451b5003",
+				     	success: function (data1) {
+                console.log(data1);
+
+                $.each(data1.rates, function (currency, rate) {
+                if (currenciess == currency) {
+                console.log(rate);
+                output += "<td>" + rate + "</td>";
+          
+              }
+			
+            });
+          }
+				})
+      })
+	
+								console.log(data)
+				output += "</table>";
+				document.getElementById("demo").innerHTML += output;
+							
+							output += "</tr>";
+							
+						}
+					})
+				},
+					
+					error: function () { alert('Error!') }  
+		
+			})
+	
+		})
+
+	});
+
+	</script>
+</head>
+
+<body>
+	<form>
+		Country Name: <input type="text" id="name">
+		<input type="button" value="Find Country Information" id="find">
+	</form>
+	<p id="demo"></p>
+</body>
+
+</html>
